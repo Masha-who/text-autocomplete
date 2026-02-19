@@ -10,6 +10,9 @@ class NextTokenDataset(Dataset):
         self.tokenizer = tokenizer
 
         for line in texts:
+            # добавляем EOS к текущей строке
+            line = line + " " + tokenizer.sep_token
+
             token_ids = tokenizer.encode(
                 line,
                 add_special_tokens=False,

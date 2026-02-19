@@ -3,10 +3,11 @@ import torch.nn as nn
 
 
 class LSTMAutocomplete(nn.Module):
-    def __init__(self, vocab_size, hidden_dim=128):
+    def __init__(self, vocab_size, hidden_dim=128, eos_token_id=None):
         super().__init__()
 
         self.embedding = nn.Embedding(vocab_size, hidden_dim)
+        self.eos_token_id = eos_token_id
 
         self.rnn = nn.LSTM(
             hidden_dim,
@@ -46,6 +47,9 @@ class LSTMAutocomplete(nn.Module):
                 next_token = torch.argmax(logits, dim=-1, keepdim=True)
 
                 generated = torch.cat([generated, next_token], dim=1)
+
+                if self.eos_token_id is not None and int(next_token.item()) == int(self.eos_token_id):
+                    break
 
                 emb = self.embedding(next_token)
                 out, hidden = self.rnn(emb, hidden)

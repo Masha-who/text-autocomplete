@@ -25,7 +25,6 @@ class LSTMTrainer:
             y_batch = y_batch.to(self.device)
 
             self.optimizer.zero_grad()
-            #loss = self.criterion(self.model(x_batch), y_batch)
 
             logits = self.model(x_batch)  # [B, T, V]
             loss = self.criterion(
