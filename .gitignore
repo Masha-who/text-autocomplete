@@ -1,2 +1,3 @@
 data/raw_dataset.txt
+data/dataset_processed.txt
 src/__pycache__

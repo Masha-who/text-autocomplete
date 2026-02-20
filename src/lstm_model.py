@@ -3,7 +3,7 @@ import torch.nn as nn
 
 
 class LSTMAutocomplete(nn.Module):
-    def __init__(self, vocab_size, hidden_dim=128, eos_token_id=None):
+    def __init__(self, vocab_size, hidden_dim=128, eos_token_id=None, dropout=0.0, num_layers=1):
         super().__init__()
 
         self.embedding = nn.Embedding(vocab_size, hidden_dim)
@@ -12,7 +12,9 @@ class LSTMAutocomplete(nn.Module):
         self.rnn = nn.LSTM(
             hidden_dim,
             hidden_dim,
-            batch_first=True
+            batch_first=True,
+            dropout=dropout,
+            num_layers=num_layers, 
         )
 
         self.fc = nn.Linear(hidden_dim, vocab_size)
@@ -54,4 +56,5 @@ class LSTMAutocomplete(nn.Module):
                 emb = self.embedding(next_token)
                 out, hidden = self.rnn(emb, hidden)
 
-        return generated.squeeze(0)
+        return generated.squeeze(0)   
+    

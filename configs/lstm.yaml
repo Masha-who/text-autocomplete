@@ -1,0 +1,8 @@
+general:
+  random_state: 42
+
+training:
+  num_epochs: 3
+
+data:
+  seq_len: 20
