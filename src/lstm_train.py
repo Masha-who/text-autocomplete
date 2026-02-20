@@ -3,15 +3,18 @@ import torch.nn as nn
 
 from tqdm import tqdm
 
+from src.eval_lstm import evaluate_rouge
 
 class LSTMTrainer:
-    def __init__(self, model, vocab_size, lr=1e-3):
+    def __init__(self, model, tokenizer, vocab_size, lr=1e-3, max_new_tokens=20):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         print("Device:", self.device)
         print("-" * 30)
 
         self.model = model.to(self.device)
         self.vocab_size = vocab_size
+        self.tokenizer = tokenizer
+        self.max_new_tokens = max_new_tokens
 
         self.criterion = nn.CrossEntropyLoss()
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)        
@@ -66,3 +69,7 @@ class LSTMTrainer:
 
             print(f"Epoch {epoch+1} | Train Loss: {train_loss:.3f} | Val Loss: {val_loss:.3f}") 
             print("-" * 30)
+
+            rouge_scores = evaluate_rouge(
+                self.model, val_loader, self.tokenizer, max_new_tokens=self.max_new_tokens
+            )
